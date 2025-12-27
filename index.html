@@ -27,12 +27,17 @@ body{
     box-sizing:border-box;
 }
 
-   #page1 {
-       position: relative;
-       overflow: hidden;
-    background: url('https://raw.githubusercontent.com/adityakumarsingh99/happy-new-year-wish/main/background.jpg') no-repeat center center;
-    background-size: cover;filter:blur(08px); /* Screen full cover kare */
-    color: #ffd700; /* Text color */
+/* ---------- PAGE 1 BACKGROUND ---------- */
+#page1{
+    color:#ffd700;
+}
+#page1::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url("background.jpg") center/cover no-repeat;
+    filter:blur(6px);
+    z-index:-1;
 }
 
 #page2{
@@ -334,6 +339,7 @@ function startHearts(){
 
 </body>
 </html>
+
 
 
 
