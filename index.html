@@ -12,7 +12,7 @@ body{
     font-family:Arial, sans-serif;
     text-align:center;
     margin:0;
-    overflow:hidden;
+    overflow-x:hidden;
 }
 
 /* Pages */
@@ -25,10 +25,9 @@ body{
     padding:30px;
     transition:all 1s ease;
 }
-#page1{ background:#0f0f1a; }
 #page2{
-    background:linear-gradient(135deg,#ff4d6d,#ff9a9e);
     left:100%;
+    background:linear-gradient(135deg,#ff4d6d,#ff9a9e);
     color:white;
 }
 
@@ -58,16 +57,16 @@ button:hover{ transform:scale(1.05); }
       3px 3px 0 #b39600;
 }
 
-/* Image reveal */
+/* Image */
 #wifeImg{
     width:220px;
     border-radius:20px;
-    margin:20px auto;
     display:none;
-    filter:blur(12px);
+    margin:20px auto;
+    filter:blur(10px);
     transform:scale(0.7);
     opacity:0;
-    transition:all 1.2s ease;
+    transition:1.2s ease;
     box-shadow:0 0 30px pink;
 }
 #wifeImg.show{
@@ -84,27 +83,33 @@ button:hover{ transform:scale(1.05); }
     animation:floatUp 5s linear infinite;
 }
 @keyframes floatUp{
-    0%{ transform:translateY(0); opacity:1;}
-    100%{ transform:translateY(-100vh); opacity:0;}
+    to{ transform:translateY(-100vh); opacity:0; }
 }
 
-/* Fireworks */
+/* 🔥 REAL FIREWORK */
 .firework{
     position:fixed;
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    animation:explode 1.2s ease-out forwards;
+    width:4px;
+    height:4px;
     pointer-events:none;
 }
-@keyframes explode{
-    0%{ transform:scale(0.2); opacity:1;}
-    100%{ transform:scale(2.5); opacity:0;}
+.spark{
+    position:absolute;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    animation:shoot 1.4s ease-out forwards;
+}
+@keyframes shoot{
+    to{
+        transform:translate(var(--x),var(--y)) scale(0.3);
+        opacity:0;
+    }
 }
 
 /* Shayari */
 .shayari{
-    font-size:22px;
+    font-size:20px;
     margin:25px 0;
     line-height:1.6;
 }
@@ -113,9 +118,10 @@ button:hover{ transform:scale(1.05); }
 
 <body>
 
+<audio id="fireSound" src="C:\Users\Asus\Downloads\firework mp4.mp3" preload="auto"></audio>
+
 <!-- PAGE 1 -->
 <div class="page" id="page1">
-
 <h1>🎉 Happy New Year 🎉</h1>
 
 <input id="nameInput" placeholder="Enter Name">
@@ -124,98 +130,105 @@ button:hover{ transform:scale(1.05); }
 
 <div id="greeting"></div>
 
-<button id="showImgBtn" onclick="showImage()" style="display:none;">Show Image ❤️</button>
+<button id="showImgBtn" onclick="showImage()" style="display:none;">
+Show Image ❤️
+</button>
 
-<img id="wifeImg" src="./wifey.jpeg" alt="My Queen ❤️">
+<img id="wifeImg" src="wifey.jpg">
 
 <br>
-<button id="moreBtn" onclick="goNextPage()" style="display:none;">More Surprise 🎁</button>
-
+<button id="moreBtn" onclick="goNextPage()" style="display:none;">
+More Surprise 🎁
+</button>
 </div>
 
 <!-- PAGE 2 -->
 <div class="page" id="page2">
-
 <h1>💖 My Love For You 💖</h1>
 
-<div class="shayari">1.
+<div class="shayari">
 Calendar badlega, saal badlega,<br>
-Par mera pyaar kabhi nahi badlega ❤️<br>
-Aap meri har subah ho,<br>
-Aur har raat ka sukoon 🌙<br>
-HAPPY NEW YEAR MERI WIFEY</div>
-
-<div class="shayari">2.
-Is naye saal me bhi<br>
-Mujhe kuch nahi chahiye…<br>
-Bas aapka saath, aapki hasi<br>
-Aur thoda sa aapka gussa 🫶❤️
+Par mera pyaar kabhi nahi badlega ❤️
 </div>
 
-<div class="shayari">3.
-Happy New Year meri jaan,<br>
-meri zindagi, meri rani,<br>
-meri everything 💛
+<div class="shayari">
+Bas aapka saath chahiye,<br>
+Har saal, har pal 🫶
 </div>
-<div class="shayari">4.
-Let's celebrate together,<br>
-I LOOOOOVEEE YOU FOREVER MERI RANI<br>
-I AM FOREVER YOUR'S AND WITH YOU IN EVERY SITUATION OF LIFE 💛
+
+<div class="shayari">
+Happy New Year meri jaan 💛
+</div>
 </div>
 
 <script>
 function showGreeting(){
-    let name=document.getElementById("nameInput").value.trim();
-    if(name===""){
-        alert("Name likho meri jaan ❤️");
-        return;
-    }
+    let name=nameInput.value.trim();
+    if(!name) return alert("Name likho meri jaan ❤️");
 
     let valid=["Aditya","aditya","Khushi","khushi","KHUSHI"];
-    if(!valid.includes(name)){
-        alert("Only for my special person ❤️");
-        return;
-    }
+    if(!valid.includes(name))
+        return alert("Only for my special person ❤️");
 
-    document.getElementById("greeting").innerHTML =
-      `<div class="text3d" id="typingText"></div>`;
-
+    greeting.innerHTML=`<div class="text3d" id="typingText"></div>`;
     typeEffect(`Happy New Year my cute wifey ${name} 💛`);
-    document.getElementById("showImgBtn").style.display="inline-block";
+
+    startFireworksWithSound();
+    showImgBtn.style.display="inline-block";
 }
 
 function typeEffect(text){
     let i=0;
-    let target=document.getElementById("typingText");
-    target.innerHTML="";
-    let interval=setInterval(()=>{
-        target.innerHTML+=text.charAt(i);
-        i++;
-        if(i>=text.length) clearInterval(interval);
+    let t=document.getElementById("typingText");
+    let inter=setInterval(()=>{
+        t.innerHTML+=text[i++];
+        if(i>=text.length) clearInterval(inter);
     },80);
 }
 
+/* 🎆 REAL FIREWORK LOGIC */
+function launchFirework(){
+    let fw=document.createElement("div");
+    fw.className="firework";
+    fw.style.left=Math.random()*90+"vw";
+    fw.style.top=Math.random()*50+"vh";
+
+    let color=`hsl(${Math.random()*360},100%,60%)`;
+
+    for(let i=0;i<90;i++){
+        let s=document.createElement("div");
+        s.className="spark";
+        s.style.background=color;
+
+        let angle=Math.random()*Math.PI*2;
+        let dist=60+Math.random()*80;
+        s.style.setProperty("--x",Math.cos(angle)*dist+"px");
+        s.style.setProperty("--y",Math.sin(angle)*dist+"px");
+
+        fw.appendChild(s);
+    }
+    document.body.appendChild(fw);
+    setTimeout(()=>fw.remove(),1500);
+}
+
+function startFireworksWithSound(){
+    fireSound.currentTime=0;
+    fireSound.play();
+
+    let burst=setInterval(launchFirework,300);
+    setTimeout(()=>clearInterval(burst),6000);
+}
+
 function showImage(){
-    let img=document.getElementById("wifeImg");
-    img.style.display="block";
-    setTimeout(()=>img.classList.add("show"),100);
-
-    document.getElementById("showImgBtn").style.display="none";
-    document.getElementById("moreBtn").style.display="inline-block";
-
+    wifeImg.style.display="block";
+    setTimeout(()=>wifeImg.classList.add("show"),100);
+    showImgBtn.style.display="none";
+    moreBtn.style.display="inline-block";
     startHearts();
-    launchFireworks();
 }
 
-/* NEXT PAGE TRANSITION */
-function goNextPage(){
-    document.getElementById("page1").style.left="-100%";
-    document.getElementById("page2").style.left="0";
-}
-
-/* Hearts */
 function startHearts(){
-    for(let i=0;i<30;i++){
+    for(let i=0;i<25;i++){
         let h=document.createElement("div");
         h.className="heart";
         h.innerHTML="❤️";
@@ -226,26 +239,11 @@ function startHearts(){
     }
 }
 
-/* Fireworks */
-function launchFireworks(){
-    for(let i=0;i<45;i++){
-        let fw=document.createElement("div");
-        fw.className="firework";
-        fw.style.left=Math.random()*100+"vw";
-        fw.style.top=Math.random()*60+"vh";
-        fw.style.background=`hsl(${Math.random()*360},100%,60%)`;
-        document.body.appendChild(fw);
-        setTimeout(()=>fw.remove(),1200);
-    }
+function goNextPage(){
+    page1.style.left="-100%";
+    page2.style.left="0";
 }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
